@@ -2,8 +2,10 @@ import numpy as np
 from stl import mesh
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import scipy.io as scio
 
-data_array = mesh.Mesh.from_file('Test1.stl')
+data = scio.loadmat('matrix1.mat')
+data_array = data['img']
 print(data_array)
 
 I0 = 20000
