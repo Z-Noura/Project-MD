@@ -7,14 +7,15 @@ import scipy.io as scio
 data = scio.loadmat('matrix1.mat')
 data_array = data['img']
 print(data_array)
+#(452,652,253)
 
 I0 = 20000
 l = 0.1
 x_source = 0
-y_source = 256
-z_source = 508
-x_final = 511
-height = 1017
+y_source = 0
+z_source = 0
+x_final = 451
+height = 252
 
 def bresenham(x1,y1,z1,x2,y2,z2):
     """
@@ -45,7 +46,7 @@ def bresenham(x1,y1,z1,x2,y2,z2):
 I_array = []
 for i in range(height): #parcours les Z
     SubI =  []
-    for j in range(512): #parcours les y
+    for j in range(452): #parcours les y
         Itot = 0
         coords = bresenham(x_source,y_source,z_source,x_final,j,i)
        
