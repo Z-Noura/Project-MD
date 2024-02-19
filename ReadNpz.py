@@ -11,9 +11,9 @@ print(data_array)
 
 I0 = 20000
 l = 0.1
-x_source = 0
-y_source = 0
-z_source = 0
+x_source = -400
+y_source = 326
+z_source = 127
 x_final = 451
 height = 252
 
