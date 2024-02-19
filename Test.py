@@ -7,18 +7,19 @@ import scipy.io as scio
 data = scio.loadmat('matrix1.mat')
 data_array = data['img']
 print(data_array)
+print(data_array.shape)
 
 I0 = 20000
-l = 0.1
+l = 20
 
 #dI = I_array - I0
 I_array = []
-for i in range(552): #parcours les Z
+for i in range(253): #parcours les Z
     SubI =  []
     for j in range(652): #parcours les Y
         Itot = 0
-        for k in range(253): #parcours les X
-            mu = data[j,k,i] 
+        for k in range(452  ): #parcours les X
+            mu = data_array[k,j,i] 
             I = 20000*np.exp(-mu*l)
             Itot += I
             

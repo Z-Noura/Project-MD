@@ -1,7 +1,7 @@
 clear, close all;
 
 %% load the sample data
-mesh = stlread('Test1.stl');
+mesh = stlread('Matrix2.stl');
 
 
 % first, generate a surface from the original image
