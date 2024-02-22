@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import scipy.io as scio
 
-data = scio.loadmat('matrix1.mat')
+data = scio.loadmat('Cercles.mat')
 data_array = data['img']
 print(data_array)
 print(data_array.shape)
@@ -33,4 +33,6 @@ I_final = I_array - I
 print(I_array)
 
 plt.imshow(I_final)
+plt.savefig('Circle.png')
+np.save('Circle.npy')
 plt.show()
