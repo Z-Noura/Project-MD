@@ -9,16 +9,15 @@ data_array = data['img']
 print(data_array)
 print(data_array.shape)
 
-I0 = 20000
-l = 20
-
+I0 = 100
+l = 1
 #dI = I_array - I0
 I_array = []
 for i in range(253): #parcours les Z
     SubI =  []
     for j in range(652): #parcours les Y
         Itot = 0
-        for k in range(452  ): #parcours les X
+        for k in range(452): #parcours les X
             mu = data_array[k,j,i] 
             I = 20000*np.exp(-mu*l)
             Itot += I
