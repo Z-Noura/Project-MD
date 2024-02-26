@@ -34,5 +34,5 @@ print(I_array)
 
 plt.imshow(I_final)
 plt.savefig('Circle.png')
-np.save('Circle.npy')
+np.save('Circle.npy',I_final)
 plt.show()
