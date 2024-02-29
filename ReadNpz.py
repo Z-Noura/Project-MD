@@ -1,17 +1,15 @@
 import numpy as np
-from stl import mesh
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import scipy.io as scio
 
-data = scio.loadmat('matrix1.mat')
+data = scio.loadmat('Cercles.mat')
 data_array = data['img']
 print(data_array)
 #(452,652,253)
 
 I0 = 20000
-l = 0.1
-x_source = -400
+l = 1
+x_source = -150000
 y_source = 326
 z_source = 127
 x_final = 451
@@ -42,35 +40,27 @@ def bresenham(x1,y1,z1,x2,y2,z2):
 
     return V
 
+def corrected_intensity_computation():
+    I_array = np.zeros((height, 452))  # Pre-allocate the array for performance
+    for i in range(height):  # traverse the Z
+        for j in range(452):  # traverse the Y
+            coords = bresenham(x_source, y_source, z_source, x_final, j, i)
+            mu_total = 0
+            for x, y, z in coords:  # traverse the points the ray crosses
+                if (x<0) or (y<0) or (z<0):
+                    mu = 0
+                else:
+                    mu = data_array[y, x, z]
+                mu_total += mu  # Summing up the attenuation values
+            I = I0 * np.exp(-mu_total * l)  # Applying the exponential decay once
 
-I_array = []
-for i in range(height): #parcours les Z
-    SubI =  []
-    for j in range(452): #parcours les y
-        Itot = 0
-        coords = bresenham(x_source,y_source,z_source,x_final,j,i)
-       
-        #print(coords)
+            I_array[i, j] = I
+        print(f'{100 * i / height:.1f} %')  # Improved progress print
 
-        
-        for k in range(len(coords)): #parcours les points par lequel le rayon traverse la matiere
-            
-            x = coords[k][0]
-            y = coords[k][1]
-            z = coords[k][2]
-            mu = data_array[y,x,z] 
-            I = 20000*np.exp(-mu*l)
-            Itot += I
-            
-            
-        SubI.append(Itot)
-       
-    I_array.append(SubI)
-    if( i%(int(height/200))) == 0:
-        print(int(100*i/height), '%')
+    plt.imshow(I_array)
+    plt.savefig('CircleB1.png')
+    np.save('CircleB1.npy',I_array)
+    plt.show()
 
-
-print(I_array)
-
-plt.imshow(I_array)
-plt.show() 
+# Call the function to perform the computation and plotting
+corrected_intensity_computation()
