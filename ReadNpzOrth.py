@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as scio
 
-data = scio.loadmat('Cercles.mat')
+data = scio.loadmat('CerclesLight.mat')
 data_array = data['img']
 (size_x, size_y, size_z) = data_array.shape
 # Assuming the given shape is (452, 652, 253)
@@ -11,7 +11,7 @@ data_array = data['img']
 y_flag = 0
 I0 = 20000
 l = 1
-if y_flag==0:
+if y_flag==1:
     x_source = int(size_x/2)
     y_source = -15000
     z_source = int(size_z / 2)
@@ -81,8 +81,8 @@ def corrected_intensity_computation():
     plt.imshow(I_array, extent=(-size_y, size_y, -size_y, size_y))
     plt.colorbar()
     plt.title('Corrected Intensity Image')
-    plt.savefig('CircleC1bis.png')
-    np.save('CircleC1bis.npy', I_array)
+    plt.savefig('CircleTest1.png')
+    np.save('CircleTest1.npy', I_array)
     plt.show()
 
 # Call the function to perform the computation and plotting
