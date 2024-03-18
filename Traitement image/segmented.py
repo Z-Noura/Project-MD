@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('Circle.npy')
+Circle = np.load('CircleB.npy')
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -60,8 +60,8 @@ plt.imshow(Circle, cmap='viridis')
 plt.colorbar() 
  
 
-plt.savefig('Traitement image/segmented.png')
-np.save('Traitement image/segmented.npy', segmented)
+plt.savefig('Traitement image/segmented1.png')
+np.save('Traitement image/segmented1.npy', segmented)
 plt.show()
 
 unique_values, counts = np.unique(segmented, return_counts=True)
