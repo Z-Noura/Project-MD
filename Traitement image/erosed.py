@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('CircleB.npy')
+Circle = np.load('Circle.npy')
 
 import numpy as np
 import matplotlib.pyplot as plt
-segmented = np.load("Traitement image/segmented1.npy")
+segmented = np.load("Traitement image/segmented.npy")
 erosed = np.zeros_like(Circle)
 
 
@@ -26,6 +26,6 @@ plt.imshow(erosed, cmap='viridis')
 plt.colorbar() 
  
 
-plt.savefig('Traitement image/erosed1.png')
-np.save('Traitement image/erosed1.npy',erosed)
+plt.savefig('Traitement image/erosed.png')
+np.save('Traitement image/erosed.npy',erosed)
 plt.show()

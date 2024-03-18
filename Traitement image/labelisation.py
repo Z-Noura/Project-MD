@@ -4,7 +4,7 @@ from skimage import measure, feature
 from scipy.optimize import minimize
 
 # Load the difference image
-difference = np.load("difference1.npy")
+difference = np.load("difference.npy")
 
 # Apply edge detection using Canny filter
 edges = feature.canny(difference)

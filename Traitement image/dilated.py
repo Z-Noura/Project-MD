@@ -2,9 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('CircleB.npy')
+Circle = np.load('Circle.npy')
 
-erosed = np.load("Traitement image/erosed1.npy")
+erosed = np.load("Traitement image/erosed.npy")
 
 dilated = np.zeros_like(erosed)
 
@@ -22,6 +22,6 @@ for i in range(0, len(erosed)):
 plt.imshow(dilated, cmap='viridis')
 plt.colorbar()
 
-plt.savefig('Traitement image/dilated1.png')
-np.save('Traitement image/dilated1.npy', dilated)
+plt.savefig('Traitement image/dilated.png')
+np.save('Traitement image/dilated.npy', dilated)
 plt.show()
