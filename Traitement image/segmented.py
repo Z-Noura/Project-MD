@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('Circle.npy')
+Circle = np.load('CircleTest.npy')
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,10 +41,7 @@ np.save('binary.npy',binaryCircle)
 segmented = np.zeros_like(Circle) 
 
 for i in range(0,len(Circle)):
-    for j in range(len(binaryCircle[i])):
-        
-            
-            
+    for j in range(len(binaryCircle[i])):    
             if i!=0 and i!= len(binaryCircle)-1 and j!=0 and j!= len(binaryCircle[i])-1 :
                 
                 neighbor=[binaryCircle[i+1][j],binaryCircle[i-1][j],binaryCircle[i][j-1],binaryCircle[i][j+1]]

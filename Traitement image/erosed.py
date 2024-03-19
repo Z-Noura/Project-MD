@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('Circle.npy')
+Circle = np.load('CircleTest.npy')
 
 import numpy as np
 import matplotlib.pyplot as plt

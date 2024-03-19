@@ -2,9 +2,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as scio
 
-data = scio.loadmat('CerclesLight.mat')
+data = scio.loadmat('femur.mat')
 data_array = data['img']
 (size_x, size_y, size_z) = data_array.shape
+maxSize = max(size_x,size_y,size_z)
 # Assuming the given shape is (452, 652, 253)
 # Plan xz (452, 253)
 
@@ -48,11 +49,11 @@ def bresenham(x1, y1, z1, x2, y2, z2):
     return V
 
 def corrected_intensity_computation():
-    I_array = np.zeros((2 * size_y, 2 * size_y))  # Pre-allocate the array for performance
-    offset = size_y  # Offset to shift indices from [-size_y, size_y) to [0, 2*size_y)
+    I_array = np.zeros((2 * maxSize, 2 * maxSize))  # Pre-allocate the array for performance
+    offset = maxSize  # Offset to shift indices from [-size_y, size_y) to [0, 2*size_y)
     ind = 0
-    for i in range(-size_y, size_y):  # Traverse the X
-        for j in range(-size_y, size_y):  # Traverse the Y
+    for i in range(-maxSize, maxSize):  # Traverse the X
+        for j in range(-maxSize, maxSize):  # Traverse the Y
             # Adjust indices to fit into the array
             adj_i = i + offset
             adj_j = j + offset
@@ -78,11 +79,11 @@ def corrected_intensity_computation():
         ind += 1
         print(f'{100 * ind / (2*size_y):.1f} %')  # Improved progress print
     
-    plt.imshow(I_array, extent=(-size_y, size_y, -size_y, size_y))
+    plt.imshow(I_array, extent=(-maxSize, maxSize, -maxSize, maxSize))
     plt.colorbar()
     plt.title('Corrected Intensity Image')
-    plt.savefig('CircleTest1.png')
-    np.save('CircleTest1.npy', I_array)
+    plt.savefig('femur1.png')
+    np.save('femur1.npy', I_array)
     plt.show()
 
 # Call the function to perform the computation and plotting
