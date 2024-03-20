@@ -5,11 +5,12 @@ import scipy.io as scio
 data = scio.loadmat('femur.mat')
 data_array = data['img']
 (size_x, size_y, size_z) = data_array.shape
+print((size_x, size_y, size_z))
 maxSize = max(size_x,size_y,size_z)
 # Assuming the given shape is (452, 652, 253)
 # Plan xz (452, 253)
 
-y_flag = 0
+y_flag = 1
 I0 = 20000
 l = 1
 if y_flag==1:
@@ -77,7 +78,7 @@ def corrected_intensity_computation():
            
             I_array[adj_i, adj_j] = I
         ind += 1
-        print(f'{100 * ind / (2*size_y):.1f} %')  # Improved progress print
+        print(f'{100 * ind / (2*maxSize):.1f} %')  # Improved progress print
     
     plt.imshow(I_array, extent=(-maxSize, maxSize, -maxSize, maxSize))
     plt.colorbar()
