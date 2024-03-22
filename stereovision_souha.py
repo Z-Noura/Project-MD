@@ -1,6 +1,6 @@
 import numpy as np
 import cv2 as cv
-
+import matplotlib.pyplot as plt
 # Load the data
 centers = np.load('binary_image1.npy')
 centers_other_image = np.load('binary_image2.npy')
@@ -75,10 +75,11 @@ print(ret)
 print(tvecs)
  
  
-
+print("rvecs",rvecs[0])
 ##matrice de rotation => convertir le vecteur en matrice
-rmatRight = cv.Rodrigues(rvecs[0])[0] #5=6eme image car meilleur detection des coins
-rmatLeft = cv.Rodrigues(rvecs[1])[0]  #4=5eme image car meilleur detection des coins
+rmatRight = cv.Rodrigues(rvecs[0])[0] 
+print("rmatRight",rmatRight)
+rmatLeft = cv.Rodrigues(rvecs[1])[0]  
 
 
 #matrice complète [R|t] => ajouter t dans R
@@ -110,8 +111,105 @@ def matFondamental(camLeft,centerRight,camRight):
         
         return np.array((crossMat(camLeft @ centerRight)) @ camLeft @ np.linalg.pinv(camRight))
 
+""" def triangulate_points(camLeft, camRight, pts_left, pts_right):
+    # Convert points to homogeneous coordinates
+    pts_left = np.hstack((pts_left, np.ones((pts_left.shape[0], 1))))
+    pts_right = np.hstack((pts_right, np.ones((pts_right.shape[0], 1))))
 
+    # Calculate the epipolar lines
+    lines_right = np.dot(camRight.T, pts_left.T).T
+    lines_left = np.dot(camLeft.T, pts_right.T).T
 
+    # Triangulate the points
+    points_3d = []
+    for i in range(pts_left.shape[0]):
+        A = np.array([
+            [pts_left[i][0] * camLeft[2][0] - camLeft[0][0], pts_left[i][0] * camLeft[2][1] - camLeft[1][0],
+             pts_left[i][0] * camLeft[2][2] - camLeft[0][2]],
+            [pts_left[i][1] * camLeft[2][0] - camLeft[0][1], pts_left[i][1] * camLeft[2][1] - camLeft[1][1],
+             pts_left[i][1] * camLeft[2][2] - camLeft[1][2]],
+            [pts_right[i][0] * camRight[2][0] - camRight[0][0], pts_right[i][0] * camRight[2][1] - camRight[1][0],
+             pts_right[i][0] * camRight[2][2] - camRight[0][2]],
+            [pts_right[i][1] * camRight[2][0] - camRight[0][1], pts_right[i][1] * camRight[2][1] - camRight[1][1],
+             pts_right[i][1] * camRight[2][2] - camRight[1][2]]
+        ])
 
+        B = np.array([
+            camLeft[0][2] - pts_left[i][0] * camLeft[2][2],
+            camLeft[1][2] - pts_left[i][1] * camLeft[2][2],
+            camRight[0][2] - pts_right[i][0] * camRight[2][2],
+            camRight[1][2] - pts_right[i][1] * camRight[2][2]
+        ])
 
+        point_3d_homogeneous = np.linalg.lstsq(A, B, rcond=None)[0]
+        point_3d_homogeneous = np.append(point_3d_homogeneous, 1)  # Convert back to homogeneous coordinates
+        if len(point_3d_homogeneous) == 4 and point_3d_homogeneous[3] != 0:
+            points_3d.append(point_3d_homogeneous / point_3d_homogeneous[3])
+        else:
+            print("Unable to triangulate point:", i)
 
+    return np.array(points_3d)
+points_3d = triangulate_points(camLeft, camRight, imgpoints1, imgpoints2)
+import open3d as o3d
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Extract x, y, z coordinates from 3D points
+x = points_3d[:, 0]
+y = points_3d[:, 1]
+z = points_3d[:, 2]
+
+# Create a 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(x, y, z, c='r', marker='o')
+
+# Set labels and title
+ax.set_xlabel('X Label')
+ax.set_ylabel('Y Label')
+ax.set_zlabel('Z Label')
+ax.set_title('3D Reconstruction')
+
+# Show plot
+plt.show()
+ """
+# Utiliser la matrice de la caméra (mtx) et les coordonnées 2D pour calculer les coordonnées 3D
+def calculate_3d_coordinates(mtx, imgpoints):
+    # Matrice inverse de la caméra
+    mtx_inv = np.linalg.inv(mtx)
+    
+    # Convertir les coordonnées 2D en coordonnées homogènes
+    imgpoints_homogeneous = np.hstack((imgpoints, np.ones((imgpoints.shape[0], 1))))
+    
+    # Calculer les coordonnées 3D
+    points_3d = np.dot(mtx_inv, imgpoints_homogeneous.T).T
+    points_3d /= points_3d[:, 2][:, np.newaxis]  # Normaliser les coordonnées homogènes
+    
+    return points_3d[:, :3]  # Retourner uniquement les trois premières colonnes pour les coordonnées 3D
+
+# Calculer les coordonnées 3D pour les deux images
+points_3d_left = calculate_3d_coordinates(mtx, imgpoints1)
+points_3d_right = calculate_3d_coordinates(mtx, imgpoints2)
+
+# Afficher les résultats
+print("Points 3D pour l'image 1:", points_3d_left)
+print("Points 3D pour l'image 2:", points_3d_right)
+
+#Extract x, y, z coordinates from 3D points
+x = points_3d_right[:, 0]
+y = points_3d_right[:, 1]
+z = points_3d_right[:, 2]
+
+# Create a 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(x, y, z, c='r', marker='o')
+
+# Set labels and title
+ax.set_xlabel('X Label')
+ax.set_ylabel('Y Label')
+ax.set_zlabel('Z Label')
+ax.set_title('3D Reconstruction')
+
+# Show plot
+plt.show()
