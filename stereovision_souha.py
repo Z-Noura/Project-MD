@@ -2,14 +2,17 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+
 # Load the data
-binary_image1 = np.load('binary_image1.npy')
+binary_image1 = np.load('CerclesI1.npy')
 print(binary_image1.shape[0])
-binary_image2 = np.load('binary_image2.npy')
+binary_image2 = np.load('CerclesI2.npy')
 print(binary_image2.shape)
-center_image1= np.load('centers_image1.npy')
-center_image2= np.load('centers_image_2.npy')
-print(center_image1)
+center_image1= np.load('CerclesC2.npy')
+print("center_image1",center_image1)
+center_image2= np.load('CerclesC2.npy')
+print("center_image2",center_image2)
+
 
 # Resize the larger image to match the size of the smaller one
 if binary_image2.shape[1] > binary_image1.shape[1] or binary_image2.shape[0] > binary_image1.shape[0]:
@@ -27,9 +30,10 @@ objp = np.array([
     [center_image1[2][0], center_image1[2][1], 0],
     [center_image1[3][0], center_image1[3][1], 0],
     [center_image1[4][0], center_image1[4][1], 0],
-    [center_image1[5][0], center_image1[5][1], 0]
+    [center_image1[6][0], center_image1[6][1], 0]
 ], dtype=np.float32)
 print("objp",objp)
+print("objp[0]",objp[0])
 
 # Image points in 2D space for image 2
 objp2 = np.array([
@@ -38,9 +42,9 @@ objp2 = np.array([
     [center_image2[2][0], center_image2[2][1],0],
     [center_image2[3][0], center_image2[3][1],0],
     [center_image2[4][0], center_image2[4][1],0],
-    [center_image2[5][0], center_image2[5][1],0]
+    [center_image2[6][0], center_image2[6][1],0]
 ], dtype=np.float32)
-
+print("objp2",objp2)
 # Image points in 2D space for image 1
 imgpoints1 = np.array([
     [center_image1[0][0], center_image1[0][1]],
@@ -48,7 +52,7 @@ imgpoints1 = np.array([
     [center_image1[2][0], center_image1[2][1]],
     [center_image1[3][0], center_image1[3][1]],
     [center_image1[4][0], center_image1[4][1]],
-    [center_image1[5][0], center_image1[5][1]]
+    [center_image1[6][0], center_image1[6][1]]
 ], dtype=np.float32)
 
 # Image points in 2D space for image 2
@@ -58,7 +62,7 @@ imgpoints2 = np.array([
     [center_image2[2][0], center_image2[2][1]],
     [center_image2[3][0], center_image2[3][1]],
     [center_image2[4][0], center_image2[4][1]],
-    [center_image2[5][0], center_image2[5][1]]
+    [center_image2[6][0], center_image2[6][1]]
 ], dtype=np.float32)
 
 # Convert the lists into a format usable by the calibration function
@@ -107,7 +111,19 @@ def matFondamental(camLeft, centerRight, camRight):
     return np.array((crossMat(camLeft @ centerRight)) @ camLeft @ np.linalg.pinv(camRight))
     
 
-F = matFondamental(camRight,camWorldCenterLeft,camLeft)
+F = matFondamental(camLeft,camWorldCenterLeft,camRight)
+
+def evaluer_contrainte_epipolaire(F, x_left, x_right):
+    # Transposer x_left pour obtenir x_left'
+    x_left_transpose = np.transpose(x_left)
+    # Calculer x'^T * F * x
+    contrainte_epipolaire = np.dot(np.dot(x_left_transpose, F), x_right)
+    return contrainte_epipolaire
+verif = evaluer_contrainte_epipolaire(F, objp2[0], objp[0])
+print("verif",verif)
+
+
+
 print(F)
 # Liste des valeurs de x'^T F x pour chaque paire de points correspondants
 values = [
@@ -119,16 +135,16 @@ for i, value in enumerate(values):
     print("Valeur pour la paire de points", i, ":", value)
 
 
-def getEpiLines(F, points):
+def getEpipolarLines(F, points):
     return F @ points
 print(F)
 print(objp)
 listI2 = []
 for x1 in objp:
-    I2=getEpiLines(F,x1)
+    I2=getEpipolarLines(F,x1)
     listI2.append(I2)
 print(listI2)
-""" I2=getEpiLines(F,imgpoints1())
+""" I2=getEpipolarLines(F,imgpoints1())
 print(I2) """
 """ for l in range(1,3):
         strp = os.path.join(path,'binary_image'+str(l) + '.png')
@@ -140,45 +156,44 @@ print("obj2",objp2)
 def findEpipiline(path, objp2, F):
     epipilines = []
     for center in objp2:
-        epipilinesRight = getEpiLines(F, center)
+        epipilinesRight = getEpipolarLines(F, center)
         print("epipilinesRight",epipilinesRight)
         tempEpipiline = [center, epipilinesRight]  # Create a new list containing center and epipilinesRight
         epipilines.append(tempEpipiline)
     return epipilines
 
-epl = findEpipiline('binary_image2.png',objp2,F)
-epl=np.array(epl)
-print(epl)
-import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt
-
-# Charger l'image binary_image_1
-image_path = 'binary_image1.png'
-image = plt.imread(image_path)
-
-# Afficher l'image
-plt.imshow(image, cmap='gray')
-
-# Parcourir chaque élément de epl
+epl = findEpipiline('CerclesC2.png',objp2,F)
 for entry in epl:
     # Extraire les coordonnées des deux points de la ligne épipolaire
     point1 = entry[0]  # Premier point
     print("point1",point1)
     point2 = entry[1]  # Deuxième point
     print("point2",point2)
-    
-    # Extraire les coordonnées x et y des deux points
-    x = [point1[0], point2[0]]  # Coordonnées x des deux points
-    y = [point1[1], point2[1]]  # Coordonnées y des deux points
-    
-    # Tracer la ligne épipolaire
-    plt.plot(x, y, color='red')  # Couleur rouge pour la ligne épipolaire
+epl=np.array(epl)
+print("epl[1][0]",epl[1][0])
+# Assurez-vous que binary_image2 est une image en niveaux de gris avec une profondeur de couleur prise en charge
+binary_image2 = binary_image2.astype(np.uint8)
 
-# Afficher le graphique
-plt.xlabel('X')  # Libellé de l'axe des abscisses
-plt.ylabel('Y')  # Libellé de l'axe des ordonnées
-plt.title('Lignes épipolaires sur binary_image_1')  # Titre du graphique
-plt.grid(True)  # Afficher une grille sur le graphique
-plt.gca().set_aspect('equal', adjustable='box')  # Assurer l'aspect ratio correct
-plt.show()
+# Tracé des épilignes
+def drawEpilines(img, lines, pts):
+    img = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
+    for line, pt in zip(lines, pts):
+        color = tuple(np.random.randint(0, 255, 3).tolist())
+        # Extraire les coordonnées x et y des points
+        x0, y0 = int(pt[0]), int(pt[1])
+        # Calculer le deuxième point en utilisant la pente de l'épiligne
+        x1 = int(x0 + 1000 * (-line[1])) # 1000 est une valeur arbitraire pour la longueur de la ligne
+        y1 = int(y0 + 1000 * line[0])
+        # Tracer la ligne
+        img = cv.line(img, (x0, y0), (x1, y1), color, 1)
+        # Tracer un petit cercle à l'extrémité du premier point pour indication
+        img = cv.circle(img, (x0, y0), 5, color, -1)
+    return img
+
+# Tracé des épilignes sur l'image de gauche
+img_with_epilines = drawEpilines(binary_image2, epl[:, 1], objp2)
+
+# Affichage de l'image avec les épilignes tracées
+cv.imshow('Image avec épilignes', img_with_epilines)
+cv.waitKey(0)
+cv.destroyAllWindows()
