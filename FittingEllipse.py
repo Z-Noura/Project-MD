@@ -27,9 +27,10 @@ processed_image = cv2.morphologyEx(binary_image_uint8, cv2.MORPH_OPEN, kernel)
 
 # Assuming 'binary_image' is the image you're working with
 plt.imshow(binary_image, cmap='gray')
+
 for center in centers:
     plt.plot(center[1], center[0], '*')  # Note: matplotlib's plot function expects (x, y), hence the reversal
+plt.savefig('CerclesC1.png')
 plt.show()
 
-np.save('CerclesF1.npy',centers)
-plt.savefig('CerclesF1.png')
+np.save('CerclesC1.npy',centers)
