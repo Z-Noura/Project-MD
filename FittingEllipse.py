@@ -4,7 +4,7 @@ from skimage.measure import label, regionprops
 import matplotlib.pyplot as plt
 
 # Load the binary image from the .npz file
-binary_image = np.load('CerclesF2.npy')
+binary_image = np.load('CerclesI2.npy')
 label_image = label(binary_image)
 centers = []
 for region in regionprops(label_image):
