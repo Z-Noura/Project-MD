@@ -2,6 +2,7 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+from mpl_toolkits.mplot3d import Axes3D
 
 # Load the data
 binary_image1 = np.load('CerclesI1.npy')
@@ -231,3 +232,131 @@ def drawEpl(fname,EplRight):
     plt.show()
 
 drawEpl(binary_image1,epl[0][1])
+
+
+
+'''Obtenir la position x du point rouge de chaque ligne de pixels (un seul point par ligne, d'où la position moyenne)'''
+def getRedAvg(fname, center_image):
+    red = mark_circle_centers(fname, center_image)
+    redPoints = [[],[],[]]  
+
+    for i, line in enumerate(red):
+        for pixel in line:
+            if pixel != 0:
+                pixel = 1
+        try:
+            
+            redPoints[0].append(np.average(range(264), weights = line)) #Calcule la moyenne pondérée le long de l'axe x.
+            redPoints[1].append(i)
+            redPoints[2].append(1)
+        except:
+            pass
+    return redPoints
+
+
+def eplRedPoints(path,center_image,EplRight):
+    points = []
+    
+    strp = path
+    redPoints = getRedAvg(strp,center_image)
+    pointsRight = [[],[],[]]
+    eplImg = EplRight[0][1] #garder uniquement les epilines et non les points rouges (EplRight[l][0])
+    print("EplRight",EplRight)  
+    print("eplImg",eplImg)                     
+    print(strp)
+    for i in range(len(eplImg[0])):
+        try : 
+            #x,y  les coordonnees du point rouge moyen de la ligne rouge (calculé pou)
+            x = int(redPoints[0][i]) #resultat de getRedAvg
+            y = int(lineY(eplImg[:,i],x)) #use of y = (-ax+c)/b to find y position
+            pointsRight[0].append(x)
+            pointsRight[1].append(y)
+            pointsRight[2].append(1)
+            
+        except:
+            pass
+    points.append(pointsRight)
+    #plt.imshow(scan)
+    #plt.show()
+    return points
+pointsRight = eplRedPoints(binary_image1,center_image1,epl)
+print("epl",epl)
+print("pointsRight",pointsRight)
+
+pointsRight = eplRedPoints(binary_image1,center_image1,epl)
+print("pointsRight",pointsRight)
+
+
+from mathutils import geometry as pygeo
+from mathutils import Vector
+
+
+
+def arrayToVector(p):
+    return Vector((p[0],p[1],p[2]))
+
+
+def getIntersection(pointsLeft,pointsRight):
+
+    pL = np.array(pointsLeft)
+    pR = np.array(pointsRight)
+    
+    camCenterRight = np.transpose(camWorldCenterRight)[0]
+    camCenterLeft = np.transpose(camWorldCenterLeft)[0]
+
+    # obtenir les coordonnées 3D du monde de tous les points 
+                    #camLeft = mtx @ rotMatLeft
+    leftObject = (np.linalg.pinv(camLeft) @ pL)
+    
+    rightObject = (np.linalg.pinv(camRight) @ pR) 
+
+    # Points caractéristiques des lignes rétro-projetées debut et fin
+    
+    leftEndVec = arrayToVector(leftObject)
+    rightEndVec = arrayToVector(rightObject)
+
+    leftStartVec = arrayToVector(camCenterLeft)
+    rightStartVec = arrayToVector(camCenterRight)
+    print("leftEndVec",leftEndVec)
+    # intersection entre deux lignes rétroprojetées = point du monde réel
+    return pygeo.intersect_line_line(leftStartVec,leftEndVec,rightStartVec,rightEndVec)
+
+
+
+def getObjectPoint():
+    point = [[],[],[]]
+    
+        
+    pointsLeft = np.array(epl[0][0])
+    ("pointsLeft",pointsLeft)
+    pointRight = np.array(pointsRight[0])
+    
+    for i in range(len(pointsLeft[0])):
+        try:
+            # calcul du point d'intersection sur l'objet -> on obtient une liste de vector
+            intersection = getIntersection(pointsLeft[:,i],pointRight[:,i])
+            print("intersection",intersection)
+            for inter in intersection:
+                inter *= 200
+                x,y,z = inter
+                point[0].append(x)
+                point[1].append(y)
+                point[2].append(z)
+        except:
+            #print('erroroooooor')
+            pass
+    return np.array(point)
+        
+
+def drawPointObject(points):
+    
+    ax = Axes3D(plt.figure())
+    
+    ax.scatter3D(points[0,:],points[1,:],points[2,:],c='purple',marker='^')     
+        
+    ax.view_init(-105,-75)
+    plt.axis()
+    plt.show()
+point = getObjectPoint()
+print(point)
+drawPointObject(point) 
