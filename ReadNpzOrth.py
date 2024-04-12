@@ -10,7 +10,7 @@ maxSize = max(size_x,size_y,size_z)
 # Assuming the given shape is (452, 652, 253)
 # Plan xz (452, 253)
 
-y_flag = 0
+y_flag = 1
 I0 = 20000
 l = 1
 if y_flag==1:
@@ -83,8 +83,8 @@ def corrected_intensity_computation():
     plt.imshow(I_array, extent=(-maxSize, maxSize, -maxSize, maxSize))
     plt.colorbar()
     plt.title('Corrected Intensity Image')
-    plt.savefig('BcpDeCercles1.png')
-    np.save('BcpDeCercles1.npy', I_array)
+    plt.savefig('BcpDeCercles2.png')
+    np.save('BcpDeCercles2.npy', I_array)
     plt.show()
 
 # Call the function to perform the computation and plotting

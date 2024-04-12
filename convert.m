@@ -1,7 +1,7 @@
 clear, close all;
 
 %% load the sample data
-mesh = stlread('Marqueurs.stl');
+mesh = stlread('Marqueur 2 v8.stl');
 
 
 % first, generate a surface from the original image
