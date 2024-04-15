@@ -6,16 +6,19 @@ import os
 from mpl_toolkits.mplot3d import Axes3D
 
 # Load the data
-binary_image1 = np.load('CerclesI1.npy')
-print(binary_image1.shape[0])
+binary_image1 = np.load('CerclesI1.npy')  
 binary_image2 = np.load('CerclesI2.npy')
-print(binary_image2.shape)
 center_image1= np.load('CerclesC1.npy')
-plt.imshow(binary_image1)
-plt.show()
-print("center_image1",center_image1)
 center_image2= np.load('CerclesC2.npy')
-print("center_image2",center_image2)
+#plt.imshow(binary_image1)
+#plt.show()
+
+
+
+#print(binary_image1.shape[0])
+#print(binary_image2.shape)
+#print("center_image1",center_image1)
+#print("center_image2",center_image2)
 
 # %%
 # Object points in 3D space
@@ -30,11 +33,11 @@ objp = np.array([
     [0, 4, 0], 
 ], dtype=np.float32)
 
-print(objp)
+#print("Objp: ",objp)
 
+#%%
 # Image points in 2D space for image 1
 import numpy as np
-# Assuming `center_image1` and `center_image2` are arrays or lists containing coordinates
 
 # Image points in 2D space for image 1
 imgpoints1 = np.array([
@@ -46,11 +49,10 @@ imgpoints1 = np.array([
     [center_image1[8][0], center_image1[8][1]],
     [center_image1[4][0], center_image1[4][1]],
     [center_image1[2][0], center_image1[2][1]],
-   
-    
-
 ], dtype=np.float32)
+
 imgpoints1 = np.reshape(imgpoints1, (-1,1,2))
+
 # Image points in 2D space for image 2
 imgpoints2 = np.array([
     [center_image2[0][0], center_image2[0][1]],
@@ -63,8 +65,10 @@ imgpoints2 = np.array([
     [center_image2[4][0], center_image2[4][1]],
     [center_image2[2][0], center_image2[2][1]],
 ], dtype=np.float32)
+
 imgpoints2 = np.reshape(imgpoints2, (-1,1,2))
-print(imgpoints2)
+
+#print("imgpoints2: ",imgpoints2)
 
 # %%
 img = cv.imread("CerclesC1.png")
@@ -74,10 +78,12 @@ gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 image_size = (binary_image1.shape[0], binary_image1.shape[1])
+
 # Here, you need to specify your initial guess for the intrinsic matrix
 initial_intrinsic_matrix = np.array([[7.5, 0, len(gray)/2],
                                      [0, 7.5, len(gray)/2],
                                      [0, 0, 1]])
+
 for imgp in [imgpoints1,imgpoints2]:
     objpoints.append(objp)
     imgpoints.append(imgp)
@@ -85,17 +91,18 @@ for imgp in [imgpoints1,imgpoints2]:
     ret,mtx,dist,rvecs,tvecs = cv.calibrateCamera(objpoints,imgpoints, gray.shape[::-1], initial_intrinsic_matrix,None,None, flags=cv.CALIB_USE_INTRINSIC_GUESS)
 
 # %%
-print(rvecs)
-print("rvecs1",rvecs[0])
-print("rvecs2",rvecs[1])
-##matrice de rotation => convertir le vecteur en matrice
-print("(rvecs[0])[0] ",(rvecs[0])[0] )
+#matrice de rotation => convertir le vecteur en matrice
 rmatRight = cv.Rodrigues(rvecs[0])[0] 
-print("rmatRight",rmatRight)
 rmatLeft = cv.Rodrigues(rvecs[1])[0]  
 
-print("tvecs[0]",tvecs[0])
-print("tvecs[1]",tvecs[1])
+#print("rvecs1",rvecs[0])
+#print("rvecs2",rvecs[1])
+#print("rmatRight",rmatRight)
+#print("tvecs[0]",tvecs[0])
+#print("tvecs[1]",tvecs[1])
+
+
+
 #matrice complète [R|t] => ajouter t dans R
 rotMatRight = np.concatenate((rmatRight,tvecs[0]), axis=1)
 rotMatLeft = np.concatenate((rmatLeft,tvecs[1]), axis=1)
@@ -107,10 +114,11 @@ camRight = mtx @ rotMatRight
 
 # trouver cx et cy (coo centre optique dans limage) pour les 2 cameras
 camWorldCenterLeft = np.linalg.inv(np.concatenate((rotMatLeft,[[0,0,0,1]]), axis=0)) @ np.transpose([[0,0,0,1]])
-print(camWorldCenterLeft)
 camWorldCenterRight = np.linalg.inv(np.concatenate((rotMatRight,[[0,0,0,1]]), axis=0)) @ np.transpose([[0,0,0,1]])
-print('Centre Gauche\n',camWorldCenterLeft) #1colonne à 4lignes
-print('Centre Gauche\n', camWorldCenterRight) #1colonne à 4lignes
+
+#print('Centre Gauche\n',camWorldCenterLeft) #1colonne à 4lignes
+#print('Centre Gauche\n', camWorldCenterRight) #1colonne à 4lignes
+
 def crossMat(v):
     v = v[:, 0]   # Matrice ligne afin d'accéder plus facilement aux valeurs v[1]...
     return np.array([[0, -v[2], v[1]],
@@ -146,11 +154,11 @@ center_marked_image1 = mark_circle_centers(binary_image1, center_image1)
 center_marked_image2 = mark_circle_centers(binary_image2, center_image2)
 
 # Display the shape of the new images
-print("Shape of center_marked_image1:", center_marked_image1)
-print("Shape of center_marked_image2:", center_marked_image2.shape)
+#print("Shape of center_marked_image1:", center_marked_image1.shape)
+#print("Shape of center_marked_image2:", center_marked_image2.shape)
 
-plt.imshow(center_marked_image1)
-plt.show()
+#plt.imshow(center_marked_image1)
+#plt.show()
 
 # %%
 def getEpiLines(F, points):
@@ -160,18 +168,15 @@ def getEpiLines(F, points):
 def findEpilines(path,center_image):
     epilines = [] # liste de chaque point gauche associe à sa ligne epipolaire
     for l in range(1):  #parcourt dossier images (26)
-        
             strp = path 
     
-    strp = path
-    
-        
-        
+    strp = path   
     red = mark_circle_centers(strp, center_image)
-    print("red",red)
+    
     tempEpilines = []  #epiline associées a leurs points gauches temporairement 
     pointsLeft = [[],[],[]]
-#Trouver Les points left'''        
+    #Trouver Les points left'''   
+         
     #i = lindice de chaque ligne epipolaire
     for i, line in enumerate(red):  #line = une liste de pixels rouges
         for pixel in line:
@@ -193,26 +198,28 @@ def findEpilines(path,center_image):
 
             #Calculer les epilines grace a la fonction getEpilines''' 
         
-    print("pointsLeft",pointsLeft)    
+     
     epilinesRight = getEpiLines(Fondamental, pointsLeft)
     
     tempEpilines.append(pointsLeft)
     tempEpilines.append(epilinesRight)
     epilines.append(tempEpilines)  # # liste de chaque point gauche associe à sa aligne epipolaire
-    print("epilines",epilines)
-    return epilines  
+
+    #print("red",red)
+    #print("pointsLeft",pointsLeft)  
+    #print("epilines",epilines)
+    return epilines,pointsLeft  
 
 # %%
 Fondamental = matFondamental(camRight,camWorldCenterLeft,camLeft)
+epl,ptL = findEpilines(binary_image2, center_image2)  #liste de chaque point gauche associe à sa lignes epipolaires de la camera droite stocke sous forme de matrice a 2 colonnes
 
-
-epl = findEpilines(binary_image2, center_image2)  #liste de chaque point gauche associe à sa lignes epipolaires de la camera droite stocke sous forme de matrice a 2 colonnes
 #scan gauche vers droite
 epl= np.array(epl)
 coef , length = epl[0][1].shape
-print("coef , length ",coef , length )
-print(epl.shape)
-print(epl[0][1])
+#print("coef , length ",coef , length )
+#print(epl.shape)
+#print(epl[0][1])
 
 def lineY(coefs,x):
     a,b,c = coefs
@@ -220,23 +227,24 @@ def lineY(coefs,x):
 
 # %%
 def drawEpl(fname,EplRight):
-    print(EplRight)
-    #img = cv.imread(fname)
+    
     img=fname
     
     coef , length = EplRight.shape #shape=number of elements in each dimension.
                                     #coef= nbre de lignes , length = nbre colonnes
-    print(coef)
-    print(length)
-    print(coef)
-    print(length)
+
+    #print(EplRight)
+    #print(coef)
+    #print(length)
+    #print(coef)
+    #print(length)
     
     for i in range(0,length): #40 = le pas, pn dessine les epilines avec un intervalle de 40 verticalement donc jsq 1080
         plt.plot([0,264],[lineY(EplRight[:,i],0),lineY(EplRight[:,i],264)],'y')
-        
-        
-    plt.imshow(img)
-    plt.show()
+          
+    #plt.imshow(img)
+    #plt.show()
+
 drawEpl(binary_image2,epl[0][1])
 
 # %%
@@ -257,13 +265,15 @@ def triangulate_points(points_left, epilines, cam_matrix_left, cam_matrix_right)
         
         # Obtenez la ligne épipolaire correspondante
         # Obtenez la ligne épipolaire correspondante
-        epiline = epilines[1][i]
+        print("epiline: ",epilines.shape)
+        epiline = epilines[0][i]
 
         
         # Calculer la coordonnée x du point correspondant sur l'image droite
         x_right = (-epiline[2] - epiline[1] * y_left) / epiline[0]
         
         # Construisez le vecteur du point sur l'image droite
+
         point_right = np.array([x_right, y_left, 1])
         
         # Triangulation
@@ -278,30 +288,11 @@ def triangulate_points(points_left, epilines, cam_matrix_left, cam_matrix_right)
 # Supposons que vous avez déjà les matrices de caméra gauche et droite
 cam_matrix_left = camWorldCenterLeft
 cam_matrix_right = camWorldCenterRight # Supposons que les matrices de caméra sont les mêmes pour la simplicité
-print(cam_matrix_left)
 
-# Supposons que vous avez les points sur l'image gauche et les lignes épipolaires correspondantes
-points_left = np.array([[156.0, 143.0, 136.0, 149.0, 146.0, 136.0, 136.0, 136.0, 136.0, 136.0, 136.0],
-                        [136, 143, 146, 149, 156, 166, 176, 186, 196, 206, 216],
-                        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])
-epilines = [[[156.0, 143.0, 136.0, 149.0, 146.0, 136.0, 136.0, 136.0, 136.0, 136.0, 136.0],
-             [136, 143, 146, 149, 156, 166, 176, 186, 196, 206, 216],
-             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]],
-            [[-4.95973159e-03, -6.05518447e-03, -6.52464255e-03,
-              -6.99440487e-03, -8.09000987e-03, -9.65507296e-03,
-              -1.12202882e-02, -1.27855034e-02, -1.43507186e-02,
-              -1.59159338e-02, -1.74811490e-02],
-             [-4.79861504e-02, -5.00192090e-02, -5.11139884e-02,
-              -4.90802069e-02, -4.95489850e-02, -5.11125426e-02,
-              -5.11118197e-02, -5.11110968e-02, -5.11103739e-02,
-              -5.11096510e-02, -5.11089281e-02],
-             [7.29992309e+00, 8.01871856e+00, 8.35007516e+00,
-              8.35521222e+00, 8.91089792e+00, 9.79794021e+00,
-              1.05218727e+01, 1.12458053e+01, 1.19697378e+01,
-              1.26936703e+01, 1.34176029e+01]]]
+#print(cam_matrix_left)
 
 # Appelez la fonction pour trianguler les points
-points_3d = triangulate_points(points_left, epilines, cam_matrix_left, cam_matrix_right)
+points_3d = triangulate_points(ptL, epl, cam_matrix_left, cam_matrix_right)
 
 
 
