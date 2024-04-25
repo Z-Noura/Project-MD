@@ -295,4 +295,18 @@ cam_matrix_right = camWorldCenterRight # Supposons que les matrices de caméra s
 points_3d = triangulate_points(ptL, epl, cam_matrix_left, cam_matrix_right)
 
 
+#%%
+import numpy as np
+import cv2 as cv
+from matplotlib import pyplot as plt
+ 
+imgL = cv.imread('CerclesI1.png', cv.IMREAD_GRAYSCALE)
+imgR = cv.imread('CerclesI2.png', cv.IMREAD_GRAYSCALE)
+ 
+stereo = cv.StereoBM.create(numDisparities=32, blockSize=5)
+disparity = stereo.compute(imgL,imgR)
+plt.imshow(disparity,'gray')
+plt.show()
 
+
+# %%

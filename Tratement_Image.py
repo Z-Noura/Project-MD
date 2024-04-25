@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('BcpDeCercles1.npy')
+Circle = np.load('BcpDeCercles2.npy')
 
 binaryCircle = np.zeros_like(Circle) 
 
@@ -16,7 +16,7 @@ for value, count in zip(unique_values, counts):
     #print(f"{value} occurs {count} times")
     listofvalue.append(value)
     listofcount.append(count)
-plt.bar(listofvalue,listofcount)
+#plt.bar(listofvalue,listofcount)
 plt.title("histogram Circle")
 #plt.show()
 print(listofcount)
@@ -44,8 +44,8 @@ for i in range(0,len(Circle)):
 plt.imshow(Circle, cmap='viridis')  
 plt.colorbar() 
 
-#plt.savefig('Traitement image/segmented.png')
-#np.save('Traitement image/segmented.npy', segmented)
+plt.savefig('CerclesSegmented2.png')
+np.save('CerclesSegmented2.npy', segmented)
 plt.show()
 
 unique_values, counts = np.unique(segmented, return_counts=True)
