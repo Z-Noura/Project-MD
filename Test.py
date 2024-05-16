@@ -59,24 +59,29 @@ M2 = np.hstack((cv.Rodrigues(rvecs[1])[0], tvecs[1]))
 M2 = np.dot(mtx, M2)
 
 # Initialiser la grille de voxels
-voxel_size = [0.001, 0.001, 0.001]
-xlim, ylim, zlim = [0.07, -0.04], [0.022, 0.132], [0.07, -0.04]
+voxel_size = [1, 1, 1]
+xlim, ylim, zlim = [0, image_size[0]], [0, image_size[1]], [0, image_size[1]] #Improve to cosider two images of different sizes
+print(1)
 def InitializeVoxels(xlim, ylim, zlim, voxel_size):
+    print(2)
     voxels_number = [
         int(np.abs(xlim[1] - xlim[0]) / voxel_size[0]) + 1,
         int(np.abs(ylim[1] - ylim[0]) / voxel_size[1]) + 1,
         int(np.abs(zlim[1] - zlim[0]) / voxel_size[2]) + 1
     ]
     total_number = np.prod(voxels_number)
+    print(3)
     voxel_grid = np.ones((total_number, 4))
-    
+
     # Create voxel coordinates
     l = 0
     for z in np.linspace(zlim[0], zlim[1], voxels_number[2]):
+
         for y in np.linspace(ylim[0], ylim[1], voxels_number[1]):
             for x in np.linspace(xlim[0], xlim[1], voxels_number[0]):
                 voxel_grid[l] = [x, y, z, 1]
                 l += 1
+        print(int((z-zlim[0])*100/(zlim[1]-zlim[0]))," %")
 
     return voxel_grid, np.array(voxels_number)
 
@@ -115,8 +120,11 @@ def ConvertVoxelList2Voxel3D(voxels_number, voxel):
     for z in range(voxels_number[2]):
         for y in range(voxels_number[1]):
             for x in range(voxels_number[0]):
-                voxel3D[y, x, z] = voxel[l, 3]
+                #print("Voxel number : ",(x,y,z))
+                #print(voxel3D.shape)
+                voxel3D[x, y, z] = voxel[l, 3]
                 l += 1
+        print(int((z/voxels_number[2])*100))
     return voxel3D
 
 voxel3D = ConvertVoxelList2Voxel3D(voxels_number, voxel_grid)
