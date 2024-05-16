@@ -41,9 +41,7 @@ objpoints = [objp, objp]  # Points objets
 imgpoints = [imgpoints1, imgpoints2]  # Points images
 
 # Charger une image pour obtenir sa taille
-img = cv.imread("CerclesC1.png")
-gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-image_size = gray.shape[::-1]
+image_size = binary_image1.shape
 
 # Matrice intrinsèque initiale (à ajuster selon les besoins)
 initial_intrinsic_matrix = np.array([[7.5, 0, image_size[0] / 2],
