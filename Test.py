@@ -7,16 +7,19 @@ import mcubes
 # Charger les données
 binary_image1 = np.load('CerclesI1.npy')
 binary_image2 = np.load('CerclesI2.npy')
+
 center_image1 = np.load('CerclesC1.npy')
 center_image2 = np.load('CerclesC2.npy')
+
 CerclesSegmented1 = np.load('CerclesSegmented1.npy')
 CerclesSegmented2 = np.load('CerclesSegmented2.npy')
 
+
 # Afficher les images pour vérification
-plt.imshow(binary_image1, cmap='gray')
+"""plt.imshow(binary_image1, cmap='gray')
 plt.show()
 plt.imshow(binary_image2, cmap='gray')
-plt.show()
+plt.show()"""
 
 # Points objets en espace 3D
 objp = np.array([
@@ -59,7 +62,7 @@ M2 = np.hstack((cv.Rodrigues(rvecs[1])[0], tvecs[1]))
 M2 = np.dot(mtx, M2)
 
 # Initialiser la grille de voxels
-voxel_size = [1, 1, 1]
+voxel_size = [3, 3, 3]
 xlim, ylim, zlim = [0, image_size[0]], [0, image_size[1]], [0, image_size[1]] #Improve to cosider two images of different sizes
 print(1)
 def InitializeVoxels(xlim, ylim, zlim, voxel_size):
@@ -76,7 +79,6 @@ def InitializeVoxels(xlim, ylim, zlim, voxel_size):
     # Create voxel coordinates
     l = 0
     for z in np.linspace(zlim[0], zlim[1], voxels_number[2]):
-
         for y in np.linspace(ylim[0], ylim[1], voxels_number[1]):
             for x in np.linspace(xlim[0], xlim[1], voxels_number[0]):
                 voxel_grid[l] = [x, y, z, 1]
@@ -95,7 +97,8 @@ def accumulate_votes(M, silhouettes, voxels):
     for i, M_ in enumerate(M):
         # Projection sur le plan d'image
         points2D = np.dot(M_, object_points3D)
-        points2D = np.floor(points2D / points2D[2, :]).astype(np.int32)
+        points2D /= points2D[2, :]
+        points2D = np.floor(points2D[:2, :]).astype(np.int32)
         
         # Assurez-vous que les points projetés sont dans les limites de l'image
         height, width = silhouettes.shape[:2]
@@ -107,7 +110,7 @@ def accumulate_votes(M, silhouettes, voxels):
         voxels[:, 3] += valid_points
 
 # Préparer les silhouettes
-silhouettes = np.stack((binary_image1, binary_image2), axis=2)
+silhouettes = np.stack((CerclesSegmented1, CerclesSegmented2), axis=2)
 
 # Matrices de projection
 M = [M1, M2]
@@ -144,4 +147,3 @@ def plot_3d(vertices, triangles):
 plot_3d(vertices, triangles)
 
 print("3D reconstruction complete and displayed.")
-
