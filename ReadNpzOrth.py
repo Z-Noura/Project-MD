@@ -7,12 +7,11 @@ data_array = data['img']
 (size_x, size_y, size_z) = data_array.shape
 print((size_x, size_y, size_z))
 maxSize = max(size_x,size_y,size_z)
-# Assuming the given shape is (452, 652, 253)
-# Plan xz (452, 253)
 
 y_flag = 1
 I0 = 20000
 l = 1
+
 if y_flag==1:
     x_source = int(size_x/2)
     y_source = -15000

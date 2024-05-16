@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('BcpDeCercles2.npy')
+Circle = np.load('BcpDeCercles1.npy')
 
 binaryCircle = np.zeros_like(Circle) 
 
