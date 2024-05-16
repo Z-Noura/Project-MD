@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('BcpDeCercles1.npy')
+Circle = np.load('BcpDeCercles2.npy')
 
 binaryCircle = np.zeros_like(Circle) 
 
@@ -106,6 +106,6 @@ plt.colorbar()
 
 #plt.savefig('Traitement image/difference.png')
 #np.save('Traitement image/difference.npy', difference)
-plt.savefig('CerclesI1.png')
-np.save('CerclesI1.npy', difference)
+plt.savefig('CerclesI2.png')
+np.save('CerclesI2.npy', difference)
 plt.show()
