@@ -82,11 +82,9 @@ xlim = [0, image_width]
 ylim = [0, image_height]
 zlim = [0, 10]  # Ajuster cette valeur en fonction des besoins
 
-
 # Afficher les dimensions de l'image et les limites du volume 3D pour vérification
 print("Dimensions de l'image:", (image_width, image_height))
 print("Limites du volume 3D (xlim, ylim, zlim):", (xlim, ylim, zlim))
-
 
 # Initialiser la grille de voxels
 def InitializeVoxels(xlim, ylim, zlim, voxel_size):
@@ -111,13 +109,11 @@ def InitializeVoxels(xlim, ylim, zlim, voxel_size):
 
     return voxel_grid, voxels_number
 
-
 # Projeter les voxels sur les images 2D
 def ProjectVoxels(voxel_grid, M):
     projected_points = M.dot(voxel_grid.T).T
     projected_points = projected_points[:, :2] / projected_points[:, 2:3]
     return projected_points
-
 
 # Vérifier si les points projetés sont dans la région segmentée
 def CheckInsideSegmented(image, points,plan):
