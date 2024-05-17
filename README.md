@@ -2,7 +2,7 @@
  
 Code de reconstruction 3D à partir d'images 2D
 
-Fichiers presents
+#Fichiers presents
      - Generation images à partir de fichiers STL 
           StlToMat.m : Conversion fichier stl en matrice 3D stockée en fichier .mat
           MatToPngNpyParrallel.py : Generation d'images à partir du ficher .mat en considerant une source envoyant des rayons paralleles
