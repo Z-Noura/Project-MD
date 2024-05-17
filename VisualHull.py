@@ -5,12 +5,12 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 # Charger les données
-binary_image1 = np.load('CerclesI1.npy')
-binary_image2 = np.load('CerclesI2.npy')
-center_image1 = np.load('CerclesC1.npy')
-center_image2 = np.load('CerclesC2.npy')
-CerclesSegmented1 = np.load('CerclesSegmented1.npy')
-CerclesSegmented2 = np.load('CerclesSegmented2.npy')
+binary_image1 = np.load('Images/CerclesI1.npy')
+binary_image2 = np.load('Images/CerclesI2.npy')
+center_image1 = np.load('Images/CerclesC1.npy')
+center_image2 = np.load('Images/CerclesC2.npy')
+CerclesSegmented1 = np.load('Images/CerclesSegmented1.npy')
+CerclesSegmented2 = np.load('Images/CerclesSegmented2.npy')
 
 """
 # Afficher les images pour vérification

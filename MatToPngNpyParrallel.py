@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as scio
 
-data = scio.loadmat('Cercles.mat')
+data = scio.loadmat('Images/Cercles.mat')
 data_array = data['img']
 print(data_array)
 #(452,652,253)
@@ -58,8 +58,8 @@ def corrected_intensity_computation():
         print(f'{100 * i / height:.1f} %')  # Improved progress print
 
     plt.imshow(I_array)
-    plt.savefig('CircleB1.png')
-    np.save('CircleB1.npy',I_array)
+    plt.savefig('Images/CircleB1.png')
+    np.save('Images/CircleB1.npy',I_array)
     plt.show()
 
 # Call the function to perform the computation and plotting

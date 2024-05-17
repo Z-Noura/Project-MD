@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Charger l'image 2D
-Circle = np.load('BcpDeCercles2.npy')
+Circle = np.load('Images/BcpDeCercles2.npy')
 
 binaryCircle = np.zeros_like(Circle) 
 
@@ -44,8 +44,8 @@ for i in range(0,len(Circle)):
 plt.imshow(Circle, cmap='viridis')  
 plt.colorbar() 
 
-plt.savefig('CerclesSegmented2.png')
-np.save('CerclesSegmented2.npy', segmented)
+plt.savefig('Images/CerclesSegmented2.png')
+np.save('Images/CerclesSegmented2.npy', segmented)
 plt.show()
 
 unique_values, counts = np.unique(segmented, return_counts=True)
@@ -106,6 +106,6 @@ plt.colorbar()
 
 #plt.savefig('Traitement image/difference.png')
 #np.save('Traitement image/difference.npy', difference)
-plt.savefig('CerclesI2.png')
-np.save('CerclesI2.npy', difference)
+plt.savefig('Images/CerclesI2.png')
+np.save('Images/CerclesI2.npy', difference)
 plt.show()

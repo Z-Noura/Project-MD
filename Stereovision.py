@@ -6,15 +6,15 @@ import os
 from mpl_toolkits.mplot3d import Axes3D
 
 # Load the data
-binary_image1 = np.load('CerclesI1.npy')
+binary_image1 = np.load('Images/CerclesI1.npy')
 print(binary_image1.shape[0])
-binary_image2 = np.load('CerclesI2.npy')
+binary_image2 = np.load('Images/CerclesI2.npy')
 print(binary_image2.shape)
-center_image1= np.load('CerclesC1.npy')
+center_image1= np.load('Images/CerclesC1.npy')
 plt.imshow(binary_image1)
 plt.show()
 print("center_image1",center_image1)
-center_image2= np.load('CerclesC2.npy')
+center_image2= np.load('Images/CerclesC2.npy')
 print("center_image2",center_image2)
 
 # %%
@@ -72,7 +72,7 @@ imgpoints2 = np.reshape(imgpoints2, (-1,1,2))
 print(imgpoints2)
 
 # %%
-img = cv.imread("CerclesC1.png")
+img = cv.imread("Images/CerclesC1.png")
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 # %%

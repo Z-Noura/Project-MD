@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as scio
 
-data = scio.loadmat('BcpDeCercles.mat')
+data = scio.loadmat('Images/BcpDeCercles.mat')
 data_array = data['img']
 (size_x, size_y, size_z) = data_array.shape
 print((size_x, size_y, size_z))
@@ -81,9 +81,9 @@ def corrected_intensity_computation():
     
     plt.imshow(I_array, extent=(-maxSize, maxSize, -maxSize, maxSize))
     plt.colorbar()
-    plt.title('Corrected Intensity Image')
-    plt.savefig('BcpDeCercles2.png')
-    np.save('BcpDeCercles2.npy', I_array)
+    plt.title('Images/Corrected Intensity Image')
+    plt.savefig('Images/BcpDeCercles2.png')
+    np.save('Images/BcpDeCercles2.npy', I_array)
     plt.show()
 
 # Call the function to perform the computation and plotting
