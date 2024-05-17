@@ -4,7 +4,7 @@ from skimage.measure import label, regionprops
 import matplotlib.pyplot as plt
 
 # Load the binary image from the .npz file
-binary_image = np.load('difference.npy')
+binary_image = np.load('CerclesI2.npy')
 label_image = label(binary_image)
 centers = []
 for region in regionprops(label_image):
@@ -27,6 +27,10 @@ processed_image = cv2.morphologyEx(binary_image_uint8, cv2.MORPH_OPEN, kernel)
 
 # Assuming 'binary_image' is the image you're working with
 plt.imshow(binary_image, cmap='gray')
+
 for center in centers:
-    plt.plot(center[1], center[0], 'ro')  # Note: matplotlib's plot function expects (x, y), hence the reversal
+    plt.plot(center[1], center[0], '*')  # Note: matplotlib's plot function expects (x, y), hence the reversal
+plt.savefig('CerclesC2.png')
 plt.show()
+
+np.save('CerclesC2.npy',centers)
