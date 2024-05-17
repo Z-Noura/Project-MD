@@ -12,13 +12,13 @@ center_image2 = np.load('CerclesC2.npy')
 CerclesSegmented1 = np.load('CerclesSegmented1.npy')
 CerclesSegmented2 = np.load('CerclesSegmented2.npy')
 
-
+"""
 # Afficher les images pour vérification
 plt.imshow(binary_image1, cmap='gray')
 plt.show()
 plt.imshow(binary_image2, cmap='gray')
 plt.show()
-
+"""
 
 # Points objets en espace 3D
 objp = np.array([
@@ -120,10 +120,16 @@ def ProjectVoxels(voxel_grid, M):
 
 
 # Vérifier si les points projetés sont dans la région segmentée
-def CheckInsideSegmented(image, points):
+def CheckInsideSegmented(image, points,plan):
     inside = []
     for pt in points:
-        x, y = int(pt[0]), int(pt[1])
+        if plan == 'xy':
+            x, y = int(pt[1]), int(pt[0])
+        elif plan == 'yz':
+            x,y = int(pt[1]),int(pt[0])
+        else: 
+            KeyError
+        
         if 0 <= x < image.shape[1] and 0 <= y < image.shape[0]:
             if image[y, x] > 0:
                 inside.append(True)
@@ -144,8 +150,8 @@ projected_points2 = ProjectVoxels(voxel_grid, M2)
 
 
 # Vérifier si les points projetés sont dans la région segmentée pour chaque image
-inside1 = CheckInsideSegmented(CerclesSegmented1, projected_points1)
-inside2 = CheckInsideSegmented(CerclesSegmented2, projected_points2)
+inside1 = CheckInsideSegmented(CerclesSegmented1, projected_points1,'xy')
+inside2 = CheckInsideSegmented(CerclesSegmented2, projected_points2, 'yz')
 
 
 # Créer les visual hulls pour chaque silhouette
@@ -154,7 +160,7 @@ visual_hull2 = voxel_grid[inside2, :3]
 
 
 # Rotate the second visual hull by 90 degrees around the y-axis
-theta = np.radians(90)
+theta = np.radians(-90)
 rotation_matrix = np.array([
     [np.cos(theta), 0, np.sin(theta)],
     [0, 1, 0],
@@ -162,7 +168,7 @@ rotation_matrix = np.array([
 ])
 
 
-visual_hull2_rotated = visual_hull2.dot(rotation_matrix.T)
+visual_hull2_rotated = (visual_hull2.dot(rotation_matrix.T))
 
 
 # Plot the visual hulls
